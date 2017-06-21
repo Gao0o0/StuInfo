@@ -1,0 +1,10 @@
+.selbox{
+  width: 400px;
+  height:30px;
+}
+.bton{
+  width:60px;
+  height: 28px;
+  border-radius: 5px;
+  border-style: none;
+}
