@@ -16,14 +16,12 @@ int cgiMain()
 			</style>\
 			</head>");*/
 
-	fprintf(cgiOut, "<head><meta charset=\"utf-8\"><title>查询结果</title>\
-		    <link rel=\"stylesheet\" href=\"/stu/public/css/bootstrap.min.css\">\
-		</head>");
-
-	char name[32] = "\0";
+	fprintf(cgiOut, "<head>\n<meta charset=\"utf-8\">\n<title>查询结果</title>\n<link href=\"https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\"> \n</head>");
+	fprintf(cgiOut, "<style type=\"text/css\">\nbody {\n height: 100%%;\nbackground-color: lightblue;\n}\n </style>");
+	char sname[11] = "\0";
 	int status = 0;
 
-	status = cgiFormString("name",  name, 32);
+	status = cgiFormString("sname",  sname, 11);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get name error!\n");
@@ -33,19 +31,9 @@ int cgiMain()
 	int ret;
 	MYSQL *db;
 	char sql[128] = "\0";
-
-	if (name[0] == '*')
-	{
-		sprintf(sql, "select * from stu");
-	}
-	else
-	{
-		sprintf(sql, "select * from stu where name = '%s'", name);
-	}
-
-
 	//初始化
 	db = mysql_init(NULL);
+	mysql_options(db, MYSQL_SET_CHARSET_NAME, "utf8");
 	if (db == NULL)
 	{
 		fprintf(cgiOut,"mysql_init fail:%s\n", mysql_error(db));
@@ -61,7 +49,26 @@ int cgiMain()
 		return -1;
 	}
 
+	strcpy(sql, "create view stuinfo(学号,姓名,性别,出生日期,联系方式,籍贯,专业,院系)\nas \nselect sno,sname,sex,birth,tel,adress,pname,dname \nfrom information , school \nwhere information.pno=school.pno and information.state=1 \norder by information.sno asc \nwith check option");
+	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
+	/*创建表information,如果ret=0,创建表成功，如果ret=1,已经有表，如果ret非0且非1则表示创建失败被。*/
+	{
+		if (ret != 1)
+		{
+			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+			mysql_close(db);
+			return -1;
+		}
+	}
 
+	if (sname[0] == '*')
+	{
+		sprintf(sql, "select * from stuinfo");
+	}
+	else
+	{
+		sprintf(sql, "select * from stuinfo where 姓名 like '%%%s%%'", sname);
+	}
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -77,9 +84,9 @@ int cgiMain()
 		return -1;
 	}
 
-	fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">查询结果</h1>");
+	fprintf(cgiOut, "<div class=\"container\" >");
 
-	fprintf(cgiOut,"<table class=\"table table-striped table-bordered\"><tr>");
+	fprintf(cgiOut,"<table class=\"table table-striped table-bordered\"  style=\"background-color: #E1F5FE;\" ><tr>");
 	int i = 0;
 
 	unsigned int fields;
@@ -91,7 +98,7 @@ int cgiMain()
 	{
 		fprintf(cgiOut, "<th>%s</th>", mysql_filed[i].name);
 	}
-	fprintf(cgiOut,"</tr>");
+	fprintf(cgiOut,"<th>操作</th></tr>");
 
 	//访问每一条记录的值
 	MYSQL_ROW  row;
@@ -105,7 +112,7 @@ int cgiMain()
 		{
 			fprintf(cgiOut,"<td>%.*s</td>", (int)len[i], row[i]);
 		}
-		fprintf(cgiOut,"</tr>");
+		fprintf(cgiOut,"<td><a href=\"/cgi-bin/sx/updatestuinfo.cgi?sno=%.*s\" >修改</a>\n<a href=\"/cgi-bin/sx/deletestu.cgi?sno=%.*s\" >删除</a></td></tr>",(int)len[0], row[0],(int)len[0], row[0]);
 	}
 	fprintf(cgiOut,"</table></div>");
 

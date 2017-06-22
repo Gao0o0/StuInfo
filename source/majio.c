@@ -11,13 +11,13 @@ int cgiMain()
   	MYSQL *db;
   	char sql[128] = "\0";
     FILE *fd;
-    fd = fopen("addstu.html", "r");
+    fd = fopen("/home/linux/stuinfo/source/addstu.html", "r");
       if(fd==NULL)
       {
         fprintf(cgiOut, "Cannot open file, addstu.html\n");
         return -1;
       }
-  /*    char ch;
+     char ch;
       ch = fgetc(fd);
 
   	while(ch != EOF){
@@ -25,6 +25,7 @@ int cgiMain()
   		ch = fgetc(fd);
     }
   	db = mysql_init(NULL);
+    mysql_options(db, MYSQL_SET_CHARSET_NAME, "utf8");
   	if (db == NULL)
   	{
   		fprintf(cgiOut,"mysql_init fail:%s\n", mysql_error(db));
@@ -53,20 +54,18 @@ int cgiMain()
   		fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
   		return -1;
   	}
-   unsigned int fields;
-  	fields = mysql_num_fields(res);
     MYSQL_ROW  row;
     unsigned long  *len;
-    fprintf(cgiOut, "<select name=\"pno\">");
+    fprintf(cgiOut, "<select name=\"pno\">\n");
   	while ((row = mysql_fetch_row(res)) != NULL)
   	{
   		fprintf(cgiOut,"<option ");
   		len = mysql_fetch_lengths(res);
       fprintf(cgiOut, "value=\"%.*s\" > %.*s",(int)len[0],row[0] ,(int)len[1],row[1]);
-  		fprintf(cgiOut,"</option");
+  		fprintf(cgiOut,"</option>");
   	}
-    fprintf(cgiOut, "</select>");
+    fprintf(cgiOut, "</select>\n");
 
-  	fprintf(cgiOut,"</div> </div> <div class=\"text-center\"> <butto type=\"submit\" class=\"btn btn-success\">提交</button> <button type=\"reset\" class=\"btn btn-success\">重置</button> </div> </form> </body> </html>");*/
+  	fprintf(cgiOut,"</div> \n</div>\n <div class=\"text-center\">\n <button  type=\"submit\" class=\"btn btn-success\">提交</button>\n <button type=\"reset\" class=\"btn btn-success\">重置</button> \n</div> \n</form> \n</body> \n</html>");
     return 0;
 }

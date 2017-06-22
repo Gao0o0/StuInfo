@@ -4,18 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <title>学生信息管理系统</title>
-    <link rel="stylesheet" type="text/css" href="./public/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-    body {
-        margin: 0px;
-        padding: 0px;
-    }
-    .header {
-      width: 100%;
-      height: 100px;
-      background-color: lightblue;
-    }
-    .load{
+     body {
+         height: 100%;
+         background-color: lightblue;
+     }
+     ul li {
+     	list-style: none;
+     }
+     .header {
+         margin-bottom: 50px;
+     }
+     .operation>div {
+         padding: 15px;
+     }
+     .operation.row .text-center button {
+     	outline-style: none;
+     }
+     .forms li {
+         display: none;
+     }
+     .forms li button {
+         margin-right: 30px;
+     }
+     .load{
       width: 100%;
       height: 30px;
       background-color: #E1F5FE;
@@ -42,7 +55,7 @@
       border-style:none;
       width:60px;
     }
-    </style>
+     </style>
 </head>
 <body>
   <div class="header">
