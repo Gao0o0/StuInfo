@@ -94,11 +94,33 @@ int cgiMain()
 		for (i = 0; i < fields-1 ; i++)
 		{
       if(i==2){
-        if(strcmp(row[i],NULL)){
-          
+        if(row[i]==NULL){
+					fprintf(cgiOut, "<td>无先修课</td>\n");
         }
+				else{
+					sprintf(sql1,"select cname from course where cno='%s'",row[i]);
+					if ((ret = mysql_real_query(db, sql1, strlen(sql1) + 1)) != 0)
+					{
+						fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+						mysql_close(db);
+						return -1;
+					}
+
+					MYSQL_RES *res1;
+					res1 = mysql_store_result(db);
+					if (res1 == NULL)
+					{
+						fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
+						return -1;
+					}
+				  MYSQL_ROW  row1;
+					row1 = mysql_fetch_row(res1);
+					fprintf(cgiOut, "<td>%s</td>",row1[0] );
+
+				}
       }
-			fprintf(cgiOut,"<td>%.*s</td>", (int)len[i], row[i]);
+			else
+					fprintf(cgiOut,"<td>%.*s</td>", (int)len[i], row[i]);
 
 		}
 		fprintf(cgiOut,"<td><a href=\"/cgi-bin/sx/updatestuinfo.cgi?sno=%.*s\" >修改</a>\n<a href=\"/cgi-bin/sx/deletestu.cgi?sno=%.*s\" >删除</a></td></tr>",(int)len[0], row[0],(int)len[0], row[0]);
@@ -107,6 +129,6 @@ int cgiMain()
 
 
 
-	mysql_close(db);
+	//mysql_close(db);
 	return 0;
 }

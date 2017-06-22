@@ -25,3 +25,4 @@ init:
 	sudo cp editstu.html /var/www/html/editstu.html
 	sudo cp editC.html /var/www/html/editC.html
 	sudo cp addc.html /usr/lib/cgi-bin/sx/addc.html
+	sudo cp addstu.html /usr/lib/cgi-bin/sx/addstu.html

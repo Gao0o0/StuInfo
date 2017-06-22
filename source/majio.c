@@ -11,7 +11,7 @@ int cgiMain()
   	MYSQL *db;
   	char sql[128] = "\0";
     FILE *fd;
-    fd = fopen("/home/linux/stuinfo/source/addstu.html", "r");
+    fd = fopen("addstu.html", "r");
       if(fd==NULL)
       {
         fprintf(cgiOut, "Cannot open file, addstu.html\n");
