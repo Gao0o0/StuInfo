@@ -1,7 +1,7 @@
 CC=gcc
 AFLAGS=-Wall -g
 LDFLAGS= -lmysqlclient
-OBJS= add.cgi del.cgi mod.cgi sel.cgi majio.cgi updatestuinfo.cgi deletestu.cgi doupdatestu.cgi
+OBJS= add.cgi del.cgi mod.cgi sel.cgi majio.cgi updatestuinfo.cgi deletestu.cgi doupdatestu.cgi addc.cgi doaddc.cgi selC.cgi
 
 all:$(OBJS)
 
@@ -23,3 +23,5 @@ init:
 	sudo cp admin.html /var/www/html/admin.html
 	sudo cp addstu.html /var/www/html/addstu.html
 	sudo cp editstu.html /var/www/html/editstu.html
+	sudo cp editC.html /var/www/html/editC.html
+	sudo cp addc.html /usr/lib/cgi-bin/sx/addc.html

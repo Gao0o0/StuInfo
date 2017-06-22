@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>学生信息管理系统</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+   body {
+       height: 100%;
+       background-color: lightblue;
+   }
+   ul li {
+     list-style: none;
+   }
+   .header {
+       margin-bottom: 50px;
+   }
+   .operation>div {
+       padding: 15px;
+   }
+   .operation.row .text-center button {
+     outline-style: none;
+   }
+   .forms li {
+       display: none;
+   }
+   .forms li button {
+       margin-right: 30px;
+   }
+   </style>
+</head>
+
+<body>
+<form class="form-horizontal" method="get" action="/cgi-bin/sx/doaddc.cgi">
+    <div class="form-group">
+        <label for="cno" class="col-sm-2 control-label">课程编号</label>
+        <div class="col-sm-10">
+            <input type="text" name="cno" class="form-control" id="stuId" placeholder="请输入课程编号">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="cname" class="col-sm-2 control-label">课程名称</label>
+        <div class="col-sm-10">
+            <input type="text" name="cname" class="form-control" id="name" placeholder="请输入课程名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="ceredit" class="col-sm-2 control-label">学分</label>
+        <div class="col-sm-10">
+           <input type="text" name="ceredit" class="form-control" id="name" placeholder="请输入学分">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="num" class="col-sm-2 control-label">课余量</label>
+        <div class="col-sm-10">
+            <input type="text" name="num" class="form-control" id="birth" placeholder="请输入课余量">
+        </div>
+      </div>
+    <div class="form-group">
+      <label for="cpan" class="col-sm-2 control-label">先修课</label>
+      <div class="col-sm-10">
