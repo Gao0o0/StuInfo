@@ -15,6 +15,7 @@ int cgiMain()
 	char cpan[7]="\0";
 	char num[4]="\0";
 	char ceredit[4]="\0";
+  char ccno[7]="\0";
 
 	status = cgiFormString("cno",  cno, 7);
 	//status为0获取成功
@@ -23,6 +24,13 @@ int cgiMain()
 		fprintf(cgiOut, "get cno error!\n");
 		return 1;
 	}
+  status = cgiFormString("ccno",  ccno, 7);
+  //status为0获取成功
+  if (status != cgiFormSuccess)
+  {
+    fprintf(cgiOut, "get ccno error!\n");
+    return 1;
+  }
 
 	status = cgiFormString("cname",  cname, 32);
 	if (status != cgiFormSuccess)
@@ -72,33 +80,20 @@ int cgiMain()
 		mysql_close(db);
 		return -1;
 	}
-
-
-
-	strcpy(sql, "CREATE TABLE course(cno char(6) PRIMARY KEY,cname char(20) UNIQUE NOT NULL,cpan char(6),ceredit SMALLINT CHECK(ceredit>0 and ceredit<10) ,  num SMALLINT DEFAULT 50 CHECK(num >=0) ,state char(1) DEFAULT 1 CHECK(state in ('0','1')),  FOREIGN KEY(cpan) REFERENCES course(cno) )character set utf8");
-	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
-	{
-		if (ret != 1)
-		{
-			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
-			mysql_close(db);
-			return -1;
-		}
-	}
-	if(strcmp(cpan,"null")==0){
-		sprintf(sql, "insert into course values('%s', '%s', null,%d,%d,'1')", cno, cname, atoi(ceredit),atoi(num));
-	}
-	else{
-		sprintf(sql, "insert into course values('%s', '%s', '%s',%d,%d,'1')", cno, cname, cpan,atoi(ceredit),atoi(num));
-	}
-
+  //修改课程表
+  if(strcmp(cpan,"null")==0){
+		sprintf(sql, "update course set cno='%s',cname='%s',cpan=null,ceredit=%d,num=%d where cno='%s'", cno, cname, atoi(ceredit),atoi(num),ccno);
+  }
+  else{
+    sprintf(sql, "update course set cno='%s',cname='%s',cpan='%s',ceredit=%d,num=%d where cno='%s'", cno, cname, cpan,atoi(ceredit),atoi(num),ccno);
+  }
 	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
 	{
 		fprintf(cgiOut, "%s\n", mysql_error(db));
 		mysql_close(db);
 		return -1;
 	}
-	fprintf(cgiOut, "<h3>add course ok!</h3>");
+	fprintf(cgiOut, "<h3>add student ok!</h3>");
 	mysql_close(db);
 	return 0;
 }

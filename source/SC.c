@@ -12,13 +12,20 @@ int cgiMain()
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
 	fprintf(cgiOut, "<head>\n<meta charset=\"utf-8\">\n<title>查询结果</title>\n<link href=\"https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\"> \n</head>");
 	fprintf(cgiOut, "<style type=\"text/css\">\nbody {\n height: 100%%;\nbackground-color: lightblue;\n}\n </style>");
-	char cname[32] = "\0";
+	char sname[11] = "\0";
+  char cname[7] = "\0";
 	int status = 0;
 
-	status = cgiFormString("cname",  cname, 32);
+	status = cgiFormString("sname",  sname, 11);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get name error!\n");
+		fprintf(cgiOut, "get sname error!\n");
+		return 1;
+	}
+  status = cgiFormString("cname",  cname, 7);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get cname error!\n");
 		return 1;
 	}
 
@@ -42,14 +49,35 @@ int cgiMain()
 		mysql_close(db);
 		return -1;
 	}
-	if (cname[0] == '*')
+
+	strcpy(sql, "create view SC(学号,姓名,课称号,课程名称,成绩)as select\ninformation.sno,information.sname,course.cno,course.cname,score.grade\nfrom course,information,score\nwhere course.cno=score.cno and information.sno=score.sno and score.state='1'");
+	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
+	/*创建表information,如果ret=0,创建表成功，如果ret=1,已经有表，如果ret非0且非1则表示创建失败被。*/
 	{
-		sprintf(sql, "select * from course where state='1'");
+		if (ret != 1)
+		{
+			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+			mysql_close(db);
+			return -1;
+		}
 	}
-	else
+
+	if (sname[0] == '*' && cname[0]=='*')
 	{
-		sprintf(sql, "select * from course where cname like '%%%s%%' and state='1'", cname);
+		sprintf(sql, "select * from SC");
 	}
+	else if(sname[0]=='*' && cname[0]!='*')
+	{
+		sprintf(sql, "select * from SC where 姓名 like '%%%s%%'", sname);
+	}
+  else if(sname[0]!='*' && cname[0]=='*')
+  {
+    sprintf(sql, "select * from SC where 课程名称 like '%%%s%%'", cname);
+  }
+  else
+  {
+    sprintf(sql, "select * from SC where 课程名称 like '%%%s%%' and 姓名 like '%%%s%%'", cname,sname);
+  }
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -75,60 +103,34 @@ int cgiMain()
 
 	MYSQL_FIELD *mysql_filed;
 	mysql_filed = mysql_fetch_fields(res);
-  fprintf(cgiOut, "<th>课程号</th>\n");
-  fprintf(cgiOut, "<th>课程名称</th>\n");
-  fprintf(cgiOut, "<th>先修课</th>\n");
-  fprintf(cgiOut, "<th>学分</th>\n");
-  fprintf(cgiOut, "<th>课余量</th>\n");
-	fprintf(cgiOut,"<th>操作</th></tr>\n");
+	for (i = 0; i < fields ; i++)
+	{
+		fprintf(cgiOut, "<th>%s</th>", mysql_filed[i].name);
+	}
+	fprintf(cgiOut,"<th>操作</th></tr>");
 
 	//访问每一条记录的值
 	MYSQL_ROW  row;
 	unsigned long  *len;
-  char sql1[128] = "\0";
 
 	while ((row = mysql_fetch_row(res)) != NULL)
 	{
 		fprintf(cgiOut,"<tr>");
 		len = mysql_fetch_lengths(res);
-		for (i = 0; i < fields-1 ; i++)
+		for (i = 0; i < fields ; i++)
 		{
-      if(i==2){
-        if(row[i]==NULL){
-					fprintf(cgiOut, "<td>无先修课</td>\n");
-        }
-				else{
-					sprintf(sql1,"select cname from course where cno='%s'",row[i]);
-					if ((ret = mysql_real_query(db, sql1, strlen(sql1) + 1)) != 0)
-					{
-						fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
-						mysql_close(db);
-						return -1;
-					}
-
-					MYSQL_RES *res1;
-					res1 = mysql_store_result(db);
-					if (res1 == NULL)
-					{
-						fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
-						return -1;
-					}
-				  MYSQL_ROW  row1;
-					row1 = mysql_fetch_row(res1);
-					fprintf(cgiOut, "<td>%s</td>",row1[0] );
-
-				}
-      }
-			else
-					fprintf(cgiOut,"<td>%.*s</td>", (int)len[i], row[i]);
-
+			fprintf(cgiOut,"<td>%.*s</td>", (int)len[i], row[i]);
 		}
-		fprintf(cgiOut,"<td><a href=\"/cgi-bin/sx/updateC.cgi?cno=%.*s\" >修改</a>\n<a href=\"/cgi-bin/sx/deleteC.cgi?cno=%.*s\" >删除</a></td></tr>",(int)len[0], row[0],(int)len[0], row[0]);
+		fprintf(cgiOut, "<td>" );
+		if(row[4]==NULL){
+			fprintf(cgiOut,"<a href=\"/cgi-bin/sx/updateSC.cgi?sno=%.*s&cno=%s\" >提交成绩</a>\n",(int)len[0], row[0],row[2]);
+		}
+		fprintf(cgiOut, "<a href=\"/cgi-bin/sx/deleteSC.cgi?sno=%.*s&cno=%s\" >删除</a></td></tr>",(int)len[0], row[0],row[2]);
 	}
 	fprintf(cgiOut,"</table></div>");
 
 
 
-	//mysql_close(db);
+	mysql_close(db);
 	return 0;
 }

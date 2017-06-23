@@ -16,12 +16,21 @@ int cgiMain()
 	char tel[12]="\0";
 	char adress[51]="\0";
 	char pno[6]="\0";
+	char ssno[13]="\0";
 
 	status = cgiFormString("sno",  sno, 13);
 	//status为0获取成功
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get sno error!\n");
+		return 1;
+	}
+
+	status = cgiFormString("ssno",  ssno, 13);
+	//status为0获取成功
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get ssno error!\n");
 		return 1;
 	}
 
@@ -90,14 +99,14 @@ int cgiMain()
 	}
 
 
-	sprintf(sql, "update information set sno='%s',sname='%s',sex='%s',birth='%s',tel='%s',adress='%s',pno='%s' where sno = '%s'", sno,sname,sex,birth,tel,adress,pno);
+	sprintf(sql, "update information set sno='%s',sname='%s',sex='%s',birth='%s',tel='%s',adress='%s',pno='%s' where sno = '%s'", sno,sname,sex,birth,tel,adress,pno,ssno);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
 		mysql_close(db);
 		return -1;
 	}
-	sprintf(sql, "delete from lod where uid = '%s'", sno);
+	sprintf(sql, "update lod set uid=%s where uid = '%s'", sno,ssno);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
