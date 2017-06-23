@@ -1,7 +1,7 @@
 CC=gcc
 AFLAGS=-Wall -g
 LDFLAGS= -lmysqlclient
-OBJS= add.cgi del.cgi mod.cgi sel.cgi majio.cgi updatestuinfo.cgi deletestu.cgi doupdatestu.cgi addc.cgi doaddc.cgi selC.cgi updateC.cgi deleteC.cgi doupdateC.cgi selsch.cgi doaddsch.cgi updateSch.cgi deleteSch.cgi doupdateSch.cgi addSC.cgi doaddSC.cgi updateSC.cgi deleteSC.cgi SC.cgi doupdateSC.cgi
+OBJS= add.cgi del.cgi mod.cgi sel.cgi majio.cgi updatestuinfo.cgi deletestu.cgi doupdatestu.cgi addc.cgi doaddc.cgi selC.cgi updateC.cgi deleteC.cgi doupdateC.cgi selsch.cgi doaddsch.cgi updateSch.cgi deleteSch.cgi doupdateSch.cgi addSC.cgi doaddSC.cgi updateSC.cgi deleteSC.cgi SC.cgi doupdateSC.cgi STUGRADE.cgi STUupdate.cgi 
 all:$(OBJS)
 
 $(OBJS):%.cgi:%.c

@@ -50,7 +50,7 @@ int cgiMain()
 		return -1;
 	}
 
-	strcpy(sql, "create view SC(学号,姓名,课称号,课程名称,成绩)as select\ninformation.sno,information.sname,course.cno,course.cname,score.grade\nfrom course,information,score\nwhere course.cno=score.cno and information.sno=score.sno and score.state='1'");
+	strcpy(sql, "create view SC(学号,姓名,课程号,课程名称,成绩)as select\ninformation.sno,information.sname,course.cno,course.cname,score.grade\nfrom course,information,score\nwhere course.cno=score.cno and information.sno=score.sno and score.state='1'");
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	/*创建表information,如果ret=0,创建表成功，如果ret=1,已经有表，如果ret非0且非1则表示创建失败被。*/
 	{
