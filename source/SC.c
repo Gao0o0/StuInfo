@@ -13,7 +13,7 @@ int cgiMain()
 	fprintf(cgiOut, "<head>\n<meta charset=\"utf-8\">\n<title>查询结果</title>\n<link href=\"https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\"> \n</head>");
 	fprintf(cgiOut, "<style type=\"text/css\">\nbody {\n height: 100%%;\nbackground-color: lightblue;\n}\n </style>");
 	char sname[11] = "\0";
-  char cname[7] = "\0";
+  char cname[64] = "\0";
 	int status = 0;
 
 	status = cgiFormString("sname",  sname, 11);
@@ -22,7 +22,7 @@ int cgiMain()
 		fprintf(cgiOut, "get sname error!\n");
 		return 1;
 	}
-  status = cgiFormString("cname",  cname, 7);
+  status = cgiFormString("cname",  cname, 64);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get cname error!\n");
@@ -66,17 +66,18 @@ int cgiMain()
 	{
 		sprintf(sql, "select * from SC");
 	}
-	else if(sname[0]=='*' && cname[0]!='*')
+	else if(sname[0]!='*' && cname[0]=='*')
 	{
 		sprintf(sql, "select * from SC where 姓名 like '%%%s%%'", sname);
 	}
-  else if(sname[0]!='*' && cname[0]=='*')
+  else if(sname[0]=='*' && cname[0]!='*')
   {
     sprintf(sql, "select * from SC where 课程名称 like '%%%s%%'", cname);
   }
   else
   {
     sprintf(sql, "select * from SC where 课程名称 like '%%%s%%' and 姓名 like '%%%s%%'", cname,sname);
+
   }
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{

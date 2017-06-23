@@ -46,7 +46,7 @@ int cgiMain()
 	}
 
 
-	sprintf(sql, "select  * from course where cno = '%s'", cno);
+	sprintf(sql, "select  * from course where cno = '%s' and state='1'", cno);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -74,7 +74,7 @@ fprintf(cgiOut, "<input type=\"text\" name=\"cname\" class=\"form-control\" id=\
   fprintf(cgiOut, "<div class=\"form-group\">\n<label for=\"pno\" class=\"col-sm-2 control-label\">先修课</label>\n<div class=\"col-sm-10\">\n");
   char sql1[128] = "\0";
 
-  sprintf(sql1,"select cno,cname from course");
+  sprintf(sql1,"select cno,cname from course where state='1'");
   if ((ret = mysql_real_query(db, sql1, strlen(sql1) + 1)) != 0)
   {
     fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));

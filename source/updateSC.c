@@ -54,7 +54,7 @@ int cgiMain()
 	}
 
 
-	sprintf(sql, "select  * from SC where 学号 = '%s' and 课程号='%s'", sno,cno);
+	sprintf(sql, "select  * from SC where 学号 = '%s' and 课程号='%s' ", sno,cno);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));

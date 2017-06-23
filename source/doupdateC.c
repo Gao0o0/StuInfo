@@ -93,7 +93,7 @@ int cgiMain()
 		mysql_close(db);
 		return -1;
 	}
-	fprintf(cgiOut, "<h3>add student ok!</h3>");
+	fprintf(cgiOut, "<h3>update ok!</h3>");
 	mysql_close(db);
 	return 0;
 }
